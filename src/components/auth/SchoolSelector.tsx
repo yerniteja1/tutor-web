@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { mockSchools } from "@/lib/mock-data";
@@ -9,14 +11,20 @@ import { School } from "@/types";
 
 export default function SchoolSelector() {
   const router = useRouter();
-  const [selectedSchoolId, setSelectedSchoolId] = useState<string>(
-    mockSchools[0]?.id
+
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(
+    mockSchools[0]?.id ?? null
   );
+  const [error, setError] = useState("");
 
   const handleContinue = () => {
-    if (selectedSchoolId) {
-      router.push("/dashboard");
+    if (!selectedSchoolId) {
+      setError("Please select a school");
+      return;
     }
+
+    setError("");
+    router.push("/dashboard");
   };
 
   return (
@@ -36,34 +44,37 @@ export default function SchoolSelector() {
       <div className="flex flex-col w-full gap-4">
         {mockSchools.map((school: School) => {
           const isSelected = selectedSchoolId === school.id;
+
           return (
             <div
               key={school.id}
-              onClick={() => setSelectedSchoolId(school.id)}
-              className={`group flex flex-col gap-2 w-full border rounded-md p-5 cursor-pointer transition-all ${
+              onClick={() => {
+                setSelectedSchoolId(school.id);
+                if (error) setError("");
+              }}
+              className={`flex flex-col gap-2 w-full border rounded-md p-5 cursor-pointer transition-all ${
                 isSelected
                   ? "border-input bg-background ring-1 ring-ring/10 shadow-sm"
                   : "border-border bg-background hover:border-input"
               }`}
             >
-              {/* Top Row: Checkbox and School Name */}
+              {/* Top Row */}
               <div className="flex items-center gap-3">
                 <Checkbox
                   checked={isSelected}
-                  onCheckedChange={() => setSelectedSchoolId(school.id)}
-                  className="h-5 w-5 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  className="pointer-events-none h-5 w-5 rounded border-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
                 <p className="text-[15px] text-foreground leading-none">
                   {school.name}
                 </p>
               </div>
 
-              {/* Bottom Row: Details (Indented to align with name) */}
+              {/* Details */}
               <div className="flex flex-col space-y-1">
-                <p className="text-xs font-medium text-muted-foreground/70 tracking-tight">
+                <p className="text-xs text-muted-foreground/70">
                   {school.id}
                 </p>
-                <p className="text-[13px] font-semibold text-foreground/90 leading-snug">
+                <p className="text-[13px] font-medium text-foreground/90 leading-snug">
                   {school.address}
                 </p>
               </div>
@@ -72,26 +83,29 @@ export default function SchoolSelector() {
         })}
       </div>
 
-      {/* Action Footer */}
+      {/* Error */}
+      {error && (
+        <p className="text-red-500 text-sm text-center">{error}</p>
+      )}
 
-
+      {/* Footer */}
       <div className="w-full space-y-6">
         <Button
           onClick={handleContinue}
           disabled={!selectedSchoolId}
-          className="w-full h-12 bg-[#0F172A] hover:bg-[#1e293b] text-white font-bold tracking-widest uppercase rounded-md transition-colors disabled:opacity-50"
+          className="w-full h-12 font-bold tracking-widest uppercase rounded-md"
         >
           CONTINUE
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
           Having issues?{" "}
-          <a
+          <Link
             href="#"
             className="text-foreground underline underline-offset-4 hover:opacity-80 transition-opacity"
           >
             Contact Support
-          </a>
+          </Link>
         </p>
       </div>
     </div>
