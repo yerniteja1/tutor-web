@@ -63,7 +63,7 @@ export const mockAttendance = [
     id: "1",
     label: "Present",
     percent: "70%",
-    count: "1300 Students",
+    count: "1300",
     color: "text-green-500",
     updated: "Last Updated: 2h ago",
   },
@@ -71,7 +71,7 @@ export const mockAttendance = [
     id: "2",
     label: "Absent",
     percent: "10%",
-    count: "6 Students",
+    count: "6",
     color: "text-red-500",
     updated: "Last Updated: 2h ago",
   },
@@ -79,18 +79,18 @@ export const mockAttendance = [
     id: "3",
     label: "Leave",
     percent: "20%",
-    count: "14 Students",
+    count: "14",
     color: "text-yellow-500",
     updated: "Last Updated: 2h ago",
   },
 ];
 
 export const mockAttendanceChart = [
-  { day: "Mon", present: 60, absent: 20, leave: 10 },
+  { day: "Mon", present: 80, absent: 20, leave: 10 },
   { day: "Tue", present: 70, absent: 15, leave: 8 },
-  { day: "Wed", present: 75, absent: 12, leave: 6 },
+  { day: "Wed", present: 90, absent: 12, leave: 6 },
   { day: "Thu", present: 90, absent: 5, leave: 3 },
-  { day: "Fri", present: 55, absent: 25, leave: 12 },
+  { day: "Fri", present: 5, absent: 25, leave: 12 },
 ];
 
 export const mockAttendanceSummary = {
