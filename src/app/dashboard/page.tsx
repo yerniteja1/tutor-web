@@ -6,6 +6,8 @@ import AttendanceCard from "@/components/dashboard/cards/AttendanceCard";
 import AttendanceChartCard from "@/components/dashboard/cards/AttendanceChartCard";
 import { mockStatCards } from "@/lib/mock-dashboard";
 import { Calendar } from "lucide-react";
+import EventsCard from "@/components/dashboard/cards/EventCard";
+import AppUsageCard from "@/components/dashboard/cards/AppUsageCard";
 
 export default function DashboardPage() {
   return (
@@ -47,7 +49,10 @@ export default function DashboardPage() {
         </div>
 
         {/* More cards coming in Step 5 */}
-
+        <div className="grid grid-cols-2 gap-4 items-stretch mb-4">
+          <EventsCard />
+          <AppUsageCard />
+        </div>
       </div>
     </DashboardLayout>
   );

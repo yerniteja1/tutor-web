@@ -109,20 +109,20 @@ export const mockAppUsage = [
   {
     app: "Web Magic App",
     count: 38,
-    color: "#93C5FD",
-    weeks: [20, 25, 30, 38],
+    color: "#64748B",
+    weeks: [40, 40, 40, 2],
   },
   {
     app: "School Magic App",
     count: 40,
-    color: "#1E3A5F",
-    weeks: [25, 30, 35, 40],
+    color: "#020617",
+    weeks: [45, 45, 45, 2],
   },
   {
     app: "School Connect App",
     count: 60,
-    color: "#BFDBFE",
-    weeks: [30, 40, 50, 60],
+    color: "#E2E8F0",
+    weeks: [50, 50, 50, 2],
   },
 ];
 
