@@ -1,4 +1,8 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import CollectionCard from "@/components/dashboard/cards/CollectionCard";
+import FeeStatusCard from "@/components/dashboard/cards/FeeStatusCard";
+import StatCard from "@/components/dashboard/cards/StatCard";
+import { mockStatCards } from "@/lib/mock-dashboard";
 import { Calendar } from "lucide-react";
 
 export default function DashboardPage() {
@@ -12,7 +16,31 @@ export default function DashboardPage() {
         </div>
       }
     >
-      <p className="text-gray-400 text-sm">Cards coming soon</p>
+      <div className="flex flex-col gap-4">
+
+        {/* Row 1 — Collection + Fee Status */}
+        <div className="grid grid-cols-2 gap-4">
+          <CollectionCard />
+          <FeeStatusCard />
+        </div>
+
+        {/* Row 2 — 4 Stat Cards */}
+        <div className="grid grid-cols-4 gap-4">
+          {mockStatCards.map((card) => (
+            <StatCard
+              key={card.id}
+              label={card.label}
+              value={card.value}
+              sub={card.sub}
+              icon={card.icon}
+              progress={card.progress}
+            />
+          ))}
+        </div>
+
+        {/* More cards coming soon */}
+
+      </div>
     </DashboardLayout>
   );
 }
