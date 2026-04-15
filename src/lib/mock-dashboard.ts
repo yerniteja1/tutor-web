@@ -128,6 +128,7 @@ export const mockAppUsage = [
 
 export const mockNavItems = [
   { id: "dashboard", label: "Dashboard", icon: "LayoutDashboard", badge: null, href: "/dashboard" },
+  { id: "people-management", label: "People Management", icon: "School", badge: null, href: "/people-management" },
   { id: "user-management", label: "User Management", icon: "Users", badge: 6, href: "/user-management" },
   { id: "class-management", label: "Class Management", icon: "School", badge: null, href: "/class-management" },
   { id: "subject-master", label: "Subject Master", icon: "BookOpen", badge: null, href: "/subject-master" },

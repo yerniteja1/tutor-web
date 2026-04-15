@@ -10,7 +10,7 @@ export default function TopBar() {
       {/* Left — Admin Dropdown + Nav Links */}
       <div className="flex items-center gap-6">
         <button className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900">
-          <span className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="w-3 h-3 rounded-full bg-[#64748B]" />
           {mockAdmin.name}
           <ChevronDown size={14} className="text-gray-400" />
         </button>
