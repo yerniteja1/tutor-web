@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { mockNavItems, mockSchool } from "@/lib/mock-dashboard";
+import Image from "next/image";
 
 const iconMap: Record<string, React.ReactNode> = {
   LayoutDashboard: <LayoutDashboard size={18} />,
@@ -36,12 +37,18 @@ export default function Sidebar() {
 
   return (
     <aside className="w-56 min-h-screen bg-white border-r border-gray-200 flex flex-col">
-
       {/* School Brand */}
       <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg items-center justify-center flex">
-            <span className="text-white text-xs font-bold">T</span>
+          <div className="w-8 h-8 rounded-lg items-center justify-center flex">
+            <Image
+              src="/school_badge.svg"
+              alt="School Badge"
+              height={32}
+              width={32}
+              className="object-contain"
+              priority
+            />
           </div>
           <div>
             <p className="text-xs font-bold text-gray-900 leading-tight">
@@ -70,7 +77,9 @@ export default function Sidebar() {
               <div className="flex items-center gap-3">
                 <span
                   className={
-                    isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"
+                    isActive
+                      ? "text-blue-600"
+                      : "text-gray-400 group-hover:text-gray-600"
                   }
                 >
                   {iconMap[item.icon]}
@@ -86,7 +95,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-
     </aside>
   );
 }
