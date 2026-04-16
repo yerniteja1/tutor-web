@@ -8,7 +8,7 @@ export const mockAdmin = {
 };
 
 export const mockCollection = {
-  greeting: "Hi, John! 👋",
+  greeting: "Hi, ",
   subtitle: "Here's a quick overview of your day",
   julyCollection: "₹33.4L",
   totalAmount: "₹54.95L",

@@ -1,3 +1,5 @@
+"use client"
+
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import CollectionCard from "@/components/dashboard/cards/CollectionCard";
 import FeeStatusCard from "@/components/dashboard/cards/FeeStatusCard";

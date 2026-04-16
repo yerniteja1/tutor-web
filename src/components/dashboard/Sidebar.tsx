@@ -16,8 +16,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { mockNavItems, mockSchool } from "@/lib/mock-dashboard";
+import { mockNavItems } from "@/lib/mock-dashboard";
 import Image from "next/image";
+import { useAuth } from "@/lib/useAuth";
 
 const iconMap: Record<string, React.ReactNode> = {
   LayoutDashboard: <LayoutDashboard size={18} />,
@@ -34,7 +35,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function Sidebar() {
   const pathname = usePathname();
-
+  const { institution } = useAuth();
   return (
     <aside className="w-56 min-h-screen bg-white border-r border-gray-200 flex flex-col">
       {/* School Brand */}
@@ -52,9 +53,9 @@ export default function Sidebar() {
           </div>
           <div>
             <p className="text-xs font-bold text-gray-900 leading-tight">
-              {mockSchool.name}
+              {institution?.name}
             </p>
-            <p className="text-xs text-gray-400">{mockSchool.id}</p>
+            <p className="text-xs text-gray-400">{institution?.id}</p>
           </div>
         </div>
         <ChevronDown size={14} className="text-gray-400" />

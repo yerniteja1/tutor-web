@@ -1,6 +1,8 @@
 import { mockCollection } from "@/lib/mock-dashboard";
+import { useAuth } from "@/lib/useAuth";
 
 export default function CollectionCard() {
+  const {user} = useAuth()
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center">
 
@@ -8,7 +10,7 @@ export default function CollectionCard() {
       <div className="basis-[70%] flex flex-col gap-4">
         <div>
           <h2 className="text-lg font-bold text-gray-900">
-            {mockCollection.greeting}
+            {mockCollection.greeting} {user?.name}
           </h2>
           <p className="text-sm text-gray-400">{mockCollection.subtitle}</p>
         </div>
