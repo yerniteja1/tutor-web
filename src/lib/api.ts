@@ -31,4 +31,16 @@ export const api = {
 
     return res.json();
   },
+
+  async me(token: string) {
+    const res = await fetch(`${BASE_URL}/api/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Unauthorized");
+
+    return res.json();
+  },
 };
