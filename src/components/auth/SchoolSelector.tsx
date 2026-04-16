@@ -109,7 +109,7 @@ export default function SchoolSelector() {
               {/* Details */}
               <div className="flex flex-col space-y-1">
                 <p className="text-xs text-muted-foreground/70">
-                  {school.id}
+                  {school.code}
                 </p>
                 <p className="text-[13px] font-medium text-foreground/90 leading-snug">
                   {school.address}

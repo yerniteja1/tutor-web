@@ -55,7 +55,7 @@ export default function Sidebar() {
             <p className="text-xs font-bold text-gray-900 leading-tight">
               {institution?.name}
             </p>
-            <p className="text-xs text-gray-400">{institution?.id}</p>
+            <p className="text-xs text-gray-400">{institution?.code}</p>
           </div>
         </div>
         <ChevronDown size={14} className="text-gray-400" />
