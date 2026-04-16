@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MoreHorizontal, Plus, ChevronDown } from "lucide-react";
-import { mockUsers } from "@/lib/mock-data";
 import {
   Table,
   TableBody,
@@ -22,16 +21,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import CreateUserModal from "./CreateUserModal";
+import { auth } from "@/lib/auth";
+import { api } from "@/lib/api";
+import { User } from "@/types";
 
 export default function PeopleManagement() {
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Selection Logic
   const toggleAll = () => {
-    if (selectedUsers.length === mockUsers.length) {
+    if (selectedUsers.length === users.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(mockUsers.map((user) => user.id));
+      setSelectedUsers(users.map((user) => user.id));
     }
   };
 
@@ -40,6 +43,23 @@ export default function PeopleManagement() {
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const token = auth.getToken();
+        if (!token) return;
+
+        const data = await api.getUsers(token);
+        setUsers(data);
+      } catch (err) {
+        console.error(err);
+      } 
+    };
+
+    load();
+  }, []);
+
 
   return (
     <div className="p-6 space-y-6 bg-white border rounded-sm flex flex-col min-h-[calc(100vh-100px)]">
@@ -94,8 +114,7 @@ export default function PeopleManagement() {
                 <Checkbox
                   className="rounded-sm"
                   checked={
-                    selectedUsers.length === mockUsers.length &&
-                    mockUsers.length > 0
+                    selectedUsers.length === users.length && users.length > 0
                   }
                   onCheckedChange={toggleAll}
                 />
@@ -118,7 +137,7 @@ export default function PeopleManagement() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockUsers.map((user) => (
+            {users.map((user) => (
               <TableRow
                 key={user.id}
                 className={
@@ -136,14 +155,14 @@ export default function PeopleManagement() {
                 <TableCell className="text-sm font-semibold text-gray-900">
                   {user.name}
                 </TableCell>
-                <TableCell className="text-sm">{user.designation}</TableCell>
+                <TableCell className="text-sm">{user.role}</TableCell>
                 <TableCell className="text-sm">
-                  {user.roles.join(", ")}
+                  {user.role}
                 </TableCell>
-                <TableCell className="text-sm">{user.mobile}</TableCell>
+                <TableCell className="text-sm">{user.mobileNo}</TableCell>
                 <TableCell>
                   <Badge className="rounded-sm px-3 bg-white border border-gray-200 text-black">
-                    {user.status}
+                    {user.isActive ? user.isActive : 'Active'}
                   </Badge>
                 </TableCell>
                 <TableCell>

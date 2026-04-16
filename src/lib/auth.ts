@@ -1,7 +1,7 @@
 const TOKEN_KEY = "auth_token";
 
 export const auth = {
-  setToken(token: string, remember: boolean) {
+  setToken(token: string, remember: boolean=true) {
     if (remember) {
       localStorage.setItem(TOKEN_KEY, token);
     } else {

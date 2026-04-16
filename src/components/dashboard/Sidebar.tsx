@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -19,6 +19,16 @@ import { Badge } from "@/components/ui/badge";
 import { mockNavItems } from "@/lib/mock-dashboard";
 import Image from "next/image";
 import { useAuth } from "@/lib/useAuth";
+import { useEffect, useState } from "react";
+import { auth } from "@/lib/auth";
+import { api } from "@/lib/api";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { Institution } from "@/types";
 
 const iconMap: Record<string, React.ReactNode> = {
   LayoutDashboard: <LayoutDashboard size={18} />,
@@ -35,30 +45,84 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { institution } = useAuth();
+  const router = useRouter();
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
+  const { institution, updateSession } = useAuth();
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const token = auth.getToken();
+        if (!token) return;
+        const data = await api.getMyInstitutions(token);
+        setInstitutions(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    load();
+  }, []);
+
+  const handleSelectInstitution = async (instId: string) => {
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+
+      const response = await api.selectInstitution(token, instId);
+      
+      auth.setToken(response.token);
+
+      router.refresh(); 
+      updateSession(response.token);
+    } catch (err) {
+      console.error("Failed to switch institution:", err);
+    }
+  };
+
   return (
     <aside className="w-56 min-h-screen bg-white border-r border-gray-200 flex flex-col">
       {/* School Brand */}
-      <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg items-center justify-center flex">
-            <Image
-              src="/school_badge.svg"
-              alt="School Badge"
-              height={32}
-              width={32}
-              className="object-contain"
-              priority
-            />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-gray-900 leading-tight">
-              {institution?.name}
+      <div className="border-b border-gray-200">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition-colors text-left outline-none">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <div className="w-8 h-8 rounded-lg shrink-0">
+                <Image
+                  src="/school_badge.svg"
+                  alt="Logo"
+                  height={32}
+                  width={32}
+                  className="object-contain"
+                />
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-xs font-bold text-gray-900 leading-tight truncate">
+                  {institution?.name || "Select Institution"}
+                </p>
+                <p className="text-[10px] text-gray-400 truncate uppercase tracking-wider">
+                  {institution?.code || "---"}
+                </p>
+              </div>
+            </div>
+            <ChevronDown size={14} className="text-gray-400 shrink-0" />
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="start" className="w-52">
+            <p className="px-2 py-1.5 text-[10px] font-semibold text-gray-400 uppercase">
+              Switch Institution
             </p>
-            <p className="text-xs text-gray-400">{institution?.code}</p>
-          </div>
-        </div>
-        <ChevronDown size={14} className="text-gray-400" />
+            {institutions.map((inst) => (
+              <DropdownMenuItem 
+                key={inst.id} 
+                onClick={() => handleSelectInstitution(inst.id)}
+                className={`flex flex-col items-start gap-0.5 cursor-pointer ${inst.id === institution?.id ? 'bg-blue-50' : ''}`}
+              >
+                <span className="text-sm font-medium">{inst.name}</span>
+                <span className="text-[10px] text-gray-400">{inst.code}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Nav Items */}
@@ -76,13 +140,7 @@ export default function Sidebar() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <span
-                  className={
-                    isActive
-                      ? "text-blue-600"
-                      : "text-gray-400 group-hover:text-gray-600"
-                  }
-                >
+                <span className={isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}>
                   {iconMap[item.icon]}
                 </span>
                 <span className="text-sm font-medium">{item.label}</span>
