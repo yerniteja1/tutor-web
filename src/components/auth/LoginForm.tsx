@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { api } from "@/lib/api";
+import { auth } from "@/lib/auth";
+
 export default function LoginForm() {
   const router = useRouter();
 
@@ -21,7 +24,7 @@ export default function LoginForm() {
 
   const [error, setError] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (formData.mobileNo.length !== 10) {
       setError("Enter a valid 10-digit mobile number");
       return;
@@ -32,13 +35,27 @@ export default function LoginForm() {
       return;
     }
 
-    setError("");
-    router.push("/select-school");
+    try {
+      setError("");
+
+      const res = await api.login({
+        mobileNo: formData.mobileNo,
+        password: formData.password,
+        rememberMe: formData.keepLoggedIn,
+      });
+
+      auth.setToken(res.token, formData.keepLoggedIn);
+
+      localStorage.setItem("institutions", JSON.stringify(res.institutions));
+
+      router.push("/select-school");
+    } catch (err: any) {
+      setError(err.message || "Login failed");
+    }
   };
 
   return (
     <div className="flex flex-col items-center w-full max-w-sm mx-auto gap-8 p-4">
-      
       {/* Logo */}
       <div className="relative w-20 h-20">
         <Image
@@ -129,9 +146,7 @@ export default function LoginForm() {
         </Button>
 
         {/* Error */}
-        {error && (
-          <p className="text-red-500 text-sm text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
         {/* Footer */}
         <p className="text-center text-sm text-muted-foreground mt-2">
