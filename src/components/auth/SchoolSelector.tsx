@@ -1,34 +1,71 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { mockSchools } from "@/lib/mock-data";
+import { api } from "@/lib/api";
+import { auth } from "@/lib/auth";
 import { School } from "@/types";
 
 export default function SchoolSelector() {
   const router = useRouter();
 
-  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(
-    mockSchools[0]?.id ?? null
-  );
+  const [schools, setSchools] = useState<School[]>([]);
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleContinue = () => {
+  // Load schools from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("institutions");
+
+    if (!stored) {
+      router.push("/login");
+      return;
+    }
+
+    const parsed: School[] = JSON.parse(stored);
+    setSchools(parsed);
+
+    if (parsed.length > 0) {
+      setSelectedSchoolId(parsed[0].id);
+    }
+  }, [router]);
+
+  const handleContinue = async () => {
     if (!selectedSchoolId) {
       setError("Please select a school");
       return;
     }
 
-    setError("");
-    router.push("/dashboard");
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = auth.getToken();
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const res = await api.selectInstitution(token, selectedSchoolId);
+
+      auth.setToken(res.token, true);
+
+      router.push("/dashboard");
+      localStorage.removeItem("institutions");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[400px] mx-auto gap-8 p-6">
+    <div className="flex flex-col items-center w-full max-w-100 mx-auto gap-8 p-6">
       
       {/* Header */}
       <div className="text-center space-y-2">
@@ -42,7 +79,7 @@ export default function SchoolSelector() {
 
       {/* School Cards */}
       <div className="flex flex-col w-full gap-4">
-        {mockSchools.map((school: School) => {
+        {schools.map((school: School) => {
           const isSelected = selectedSchoolId === school.id;
 
           return (
@@ -92,10 +129,10 @@ export default function SchoolSelector() {
       <div className="w-full space-y-6">
         <Button
           onClick={handleContinue}
-          disabled={!selectedSchoolId}
+          disabled={!selectedSchoolId || loading}
           className="w-full h-12 font-bold tracking-widest uppercase rounded-md"
         >
-          CONTINUE
+          {loading ? "Processing..." : "CONTINUE"}
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
